@@ -103,4 +103,25 @@ export default function Login() {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Password
+        <Form.Label>Password:</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Password (at least 8 characters)"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          required
+        />
+      </Form.Group>
+
+      {isActive ? (
+        <Button variant="primary" type="submit">
+          Login
+        </Button>
+      ) : (
+        <Button variant="danger" type="submit" disabled>
+          Fill out all fields first
+        </Button>
+      )}
+    </Form>
+  );
+}
