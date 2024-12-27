@@ -21,7 +21,12 @@ export default function Login() {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch user details');
+        }
+        return res.json();
+      })
       .then((data) => {
         const userData = {
           id: data.result._id,
@@ -29,6 +34,10 @@ export default function Login() {
         };
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData)); // Store user data in localStorage
+      })
+      .catch((error) => {
+        notyf.error('Error retrieving user details');
+        console.error(error);
       });
   }
 
@@ -46,7 +55,12 @@ export default function Login() {
         password: password,
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Login failed');
+        }
+        return res.json();
+      })
       .then((data) => {
         if (data.access) {
           localStorage.setItem('token', data.access);
@@ -57,6 +71,10 @@ export default function Login() {
         } else {
           notyf.error(data.message || 'Something went wrong!');
         }
+      })
+      .catch((error) => {
+        notyf.error('Login failed');
+        console.error(error);
       });
   }
 
@@ -85,25 +103,4 @@ export default function Login() {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Password:</Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="Password (at least 8 characters)"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
-      </Form.Group>
-
-      {isActive ? (
-        <Button variant="primary" type="submit">
-          Login
-        </Button>
-      ) : (
-        <Button variant="danger" type="submit" disabled>
-          Fill out all fields first
-        </Button>
-      )}
-    </Form>
-  );
-}
+        <Form.Label>Password
