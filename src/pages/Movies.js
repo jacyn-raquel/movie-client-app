@@ -1,8 +1,13 @@
 import MovieCard from '../components/MovieCard';
+import AdminView from '../components/AdminView';
 
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import UserContext from '../UserContext';
+import {Navigate} from 'react-router-dom';
 
 export default function Movies() {
+
+	const {user}=useContext(UserContext);
 
 	const [movies, setMovies] = useState([]);
 
@@ -21,17 +26,26 @@ export default function Movies() {
 
 	useEffect(()=> {
 		getMovies();
-
-	},[])
-
+	},[user])
 
 	return(
-
 		<>
-		<div className="p-5 text-center">		
-			<h1 className="my-4"> Movies </h1>
-			<MovieCard data={movies} fetchMovies={getMovies}/>
-		</div>
+		{
+
+			(user.id !== null) ?
+				(user.isAdmin) ?
+				<AdminView movieData={movies} fetchMovies={getMovies}/>
+				:
+
+				<div className="p-5 text-center">		
+					<h1 className="my-4"> Movies </h1>
+					<MovieCard data={movies} fetchMovies={getMovies}/>
+				</div>
+
+			:
+			<Navigate to="/login"/>
+		}
+		
 		</>
 		)
 }

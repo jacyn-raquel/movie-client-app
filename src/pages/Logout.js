@@ -7,7 +7,7 @@ export default function Logout() {
 
   useEffect(() => {
     unsetUser();
-  }, [unsetUser]);
+  }, []);
 
-  return <Navigate to="/login" />;
+  return <Navigate to="/" />;
 }

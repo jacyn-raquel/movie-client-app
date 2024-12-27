@@ -1,7 +1,8 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { UserProvider } from './UserContext';  // Import UserProvider
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
+import UserContext from './UserContext';
 
 // Import Pages
 import Home from './pages/Home';
@@ -15,9 +16,57 @@ import Logout from './pages/Logout';
 import AppNavBar from './components/AppNavBar';
 
 function App() {
+  const [user, setUser] = useState({
+    id:null,
+    isAdmin: null
+  });
+
+  function unsetUser(){
+    localStorage.clear();
+    setUser({
+      id:null,
+      isAdmin: null
+    });
+  }
+
+  useEffect(()=>{
+    const token = localStorage.getItem('token');
+
+    if(token){
+      fetch(`${process.env.REACT_APP_API_URL}/users/details`,{
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+
+        data.result._id === undefined ? (
+          setUser({
+            id:null,
+            isAdmin: null
+          }))
+        :
+          (
+            setUser({
+              id:data.result._id,
+              isAdmin: data.result.isAdmin
+            })
+
+            )
+      })
+    } else {
+      setUser({
+        id:null,
+        isAdmin: null
+      })
+    }
+  },[])
+
   return (
     // Wrap the entire Router with UserProvider
-    <UserProvider>
+    <UserProvider value ={{user, setUser, unsetUser}}>
       <Router>
         <AppNavBar />
         <Container>

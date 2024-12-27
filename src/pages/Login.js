@@ -24,8 +24,8 @@ export default function Login() {
       .then((res) => res.json())
       .then((data) => {
         const userData = {
-          id: data._id,
-          isAdmin: data.isAdmin,
+          id: data.result._id,
+          isAdmin: data.result.isAdmin,
         };
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData)); // Store user data in localStorage
