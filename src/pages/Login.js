@@ -54,8 +54,7 @@ export default function Login() {
         email: email,
         password: password,
       }),
-    })
-      .then((res) => {
+    }).then((res) => {
         if (!res.ok) {
           throw new Error('Login failed');
         }
